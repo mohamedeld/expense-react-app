@@ -3,21 +3,28 @@ import ExpenseFilter from '../NewExpense/ExpenseFilter';
 import Card from '../UI/Card';
 import ExpenseItem from './ExpenseItem';
 import './Expenses.css';
+import ExpensesChart from './ExpensesChart';
 
 const Expenses = ({expenses}) => {
   const [filterYear,setFilterYear] = useState('2020');
-  const filterChangeHandler = ()=>{
-    setFilterYear(filterYear)
+
+  const filterChangeHandler = (selectedYear)=>{
+    setFilterYear(selectedYear)
   }
-   
+  const filterExpenseYear = expenses.filter(expense=>{
+    return expense.date.getFullYear().toString() === filterYear
+  });
+
   return (
     <>
         <Card className='expenses'>
-          <ExpenseFilter selected={filterYear} onChange={filterChangeHandler}/>
+          <ExpenseFilter selected={filterYear} onChangeFilter={filterChangeHandler}/>
+          <ExpensesChart expenses={filterExpenseYear}/>
     {
-      expenses.map(expense=>(
+      filterExpenseYear.length === 0?(<p>no expenses found</p>):(filterExpenseYear.map(expense=>(
         <ExpenseItem key={expense.id} expense={expense}/>    
-      ))
+      )))
+      
     }
     
     </Card>
